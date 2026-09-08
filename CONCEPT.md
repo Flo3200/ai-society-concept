@@ -147,3 +147,65 @@ next steps for a v2, none of which are implemented here:
 - Every agent action is produced by a human-operated Claude Code session,
   never automated.
 - All state changes are persisted immediately and are human-readable.
+
+## 9. Addendum (v1.1): The Negotiation Forum
+
+A second, independent game module alongside the Chancellor election -
+same platform, same no-API/no-internet/human-in-the-loop principles, but
+a different roster, different mechanic, and its own separate scoring
+(it never touches the Chancellor game's coins).
+
+**Roster.** 4 delegates instead of 5: 2x Sonnet-5, 2x Haiku-4.5. This is
+a deliberate, self-contained variation for this module only - the
+Chancellor election keeps its original 1x Sonnet-5 / 4x Haiku-4.5 roster
+untouched.
+
+**Phase 1 - Position.** Each delegate independently writes exactly 10
+numbered policy points for Germany. No group discussion happens first -
+this is a concrete platform, not a 100-word soundbite.
+
+**Phase 2 - Negotiation.** Delegates take turns, round-robin, one at a
+time. On their turn a delegate sends **exactly one private message to
+exactly one other still-active delegate** - never a broadcast to the
+whole group. This replaces an earlier "open talk-show debate" idea from
+the design discussion, deliberately dropped in favor of private,
+one-to-one dealmaking, which is closer to how real coalition talks work.
+Every delegate is always shown the messages sent to them since their
+last turn, even in a round where they choose to write to someone else -
+so incoming offers are never silently missed.
+
+**Forming a party.** Once two delegates have genuinely agreed on a joint
+10-point paper and a leader, either of them includes a structured
+`DEAL WITH: / LEADER: / 1..10.` block in their message (mirroring the
+`RANKING:` line pattern from the Chancellor game - a minimal, strictly
+parseable tag the platform can validate without guessing at free text).
+The human operator uses this to formally record the party via a "Deal
+aufzeichnen" action.
+
+**Scoring.** With exactly 4 delegates, at most two parties can ever
+form:
+- The **first** party to lock in splits 1st/2nd place: leader = 1st,
+  partner = 2nd.
+- The two delegates *not* in that first party are automatically the
+  second pairing (there is no other combination left). They share a
+  **combined budget of 4 more messages** (not 4 each) to also finalize a
+  deal.
+  - Success: leader = 3rd, partner = 4th.
+  - Budget exhausted with no deal: **both lose completely** - no rank at
+    all, strictly worse than 4th place.
+- Independent of rank, delegates are also told to care about how many of
+  their own original 10 points survive into whichever final paper they
+  end up part of - this is conveyed to them as a role-play incentive in
+  the generated prompts, not tracked as an automatic score (matching
+  points in free text reliably is out of scope for v1 - see below).
+
+**Deliberate v1 scope cuts**, consistent with this being a first concept
+paper rather than a finished product:
+- No automatic detection of "how many of my points made it into the
+  final paper" - the original 10 points and the final paper are shown
+  side by side for a human (or the agents themselves) to judge
+  qualitatively.
+- No message-count cap during the *open* negotiation phase before the
+  first deal locks - only the post-lock second pair has a hard budget.
+- This module is single-shot per playthrough (no repeating rounds like
+  the Chancellor election) - reset it via the UI to play again.

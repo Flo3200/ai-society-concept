@@ -1,4 +1,5 @@
 app/data/game_state.json
+app/data/forum_state.json
 app/data/*.tmp
 __pycache__/
 *.pyc

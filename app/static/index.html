@@ -16,36 +16,55 @@
       </div>
     </div>
     <nav class="tabs">
+      <button class="tab-btn active" data-toplevel-tab="chancellor">Kanzler-Wahl</button>
+      <button class="tab-btn" data-toplevel-tab="forum">Verhandlungsforum</button>
+    </nav>
+  </header>
+
+  <section id="toplevel-chancellor" class="toplevel-panel active">
+    <nav class="tabs subtabs">
       <button class="tab-btn active" data-tab="game">Game</button>
       <button class="tab-btn" data-tab="leaderboard">Leaderboard</button>
       <button class="tab-btn" data-tab="history">History</button>
     </nav>
-  </header>
 
-  <div id="next-action" class="next-action"></div>
+    <div id="next-action" class="next-action"></div>
 
-  <main>
-    <section id="tab-game" class="tab-panel active">
-      <div id="phase-stepper" class="phase-stepper"></div>
-      <div id="agent-grid" class="agent-grid"></div>
-      <div id="results-panel" class="results-panel hidden"></div>
-    </section>
+    <main>
+      <section id="tab-game" class="tab-panel active">
+        <div id="phase-stepper" class="phase-stepper"></div>
+        <div id="agent-grid" class="agent-grid"></div>
+        <div id="results-panel" class="results-panel hidden"></div>
+      </section>
 
-    <section id="tab-leaderboard" class="tab-panel">
-      <h2>Leaderboard</h2>
-      <table class="table" id="leaderboard-table">
-        <thead>
-          <tr><th>#</th><th>Candidate</th><th>Coins</th><th>Cumulative Points</th><th>Round Wins</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
+      <section id="tab-leaderboard" class="tab-panel">
+        <h2>Leaderboard</h2>
+        <table class="table" id="leaderboard-table">
+          <thead>
+            <tr><th>#</th><th>Candidate</th><th>Coins</th><th>Cumulative Points</th><th>Round Wins</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
 
-    <section id="tab-history" class="tab-panel">
-      <h2>Round History</h2>
-      <div id="history-list"></div>
-    </section>
-  </main>
+      <section id="tab-history" class="tab-panel">
+        <h2>Round History</h2>
+        <div id="history-list"></div>
+      </section>
+    </main>
+  </section>
+
+  <section id="toplevel-forum" class="toplevel-panel">
+    <div id="forum-next-action" class="next-action"></div>
+
+    <main>
+      <div id="forum-phase-stepper" class="phase-stepper"></div>
+      <div id="forum-agent-grid" class="agent-grid"></div>
+      <div id="forum-deals-panel" class="results-panel"></div>
+      <div id="forum-messages-panel" class="results-panel"></div>
+      <div id="forum-result-panel" class="results-panel hidden"></div>
+    </main>
+  </section>
 
   <div id="modal-backdrop" class="modal-backdrop hidden">
     <div class="modal" id="modal">
@@ -54,10 +73,18 @@
     </div>
   </div>
 
+  <div id="modal-backdrop-forum" class="modal-backdrop hidden">
+    <div class="modal" id="modal-forum">
+      <button class="modal-close" id="modal-close-forum">&times;</button>
+      <div id="modal-body-forum"></div>
+    </div>
+  </div>
+
   <footer>
-    <p>Runs entirely on <code>127.0.0.1</code>. No API calls, no internet connection. All state is saved to <code>app/data/game_state.json</code>.</p>
+    <p>Runs entirely on <code>127.0.0.1</code>. No API calls, no internet connection. All state is saved locally in <code>app/data/</code>.</p>
   </footer>
 
   <script src="app.js"></script>
+  <script src="forum.js"></script>
 </body>
 </html>

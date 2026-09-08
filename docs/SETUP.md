@@ -1,9 +1,14 @@
 # Setup & Operator Guide
 
 This document tells you, the **human operator**, exactly what to do to run
-a session of the AI Society Chancellor game. The platform itself never
-calls any model, any API, or the internet — it only tracks state and tells
-you what to type and where.
+a session of either AI Society game: the **Chancellor election** or the
+**Negotiation forum**. The platform itself never calls any model, any API,
+or the internet — it only tracks state and tells you what to type and
+where. Both games run from the same server and the same browser page (two
+top-level tabs: "Kanzler-Wahl" and "Verhandlungsforum"), with completely
+separate state, agent rosters, and scoring.
+
+## Part 1: The Chancellor Election
 
 ## Prerequisites
 
@@ -115,3 +120,73 @@ rm app/data/game_state.json
 
 The next time you start the server, a fresh game (round 1, 100 coins each)
 is created automatically.
+
+---
+
+## Part 2: The Negotiation Forum
+
+Switch to the "Verhandlungsforum" tab in the browser to play this game.
+It has its own 4-agent roster, its own state file
+(`app/data/forum_state.json`), and does not touch the Chancellor game's
+coins or history at all.
+
+### The four delegates
+
+| Agent id   | Display name             | Model             | Project folder            |
+|------------|---------------------------|--------------------|-----------------------------|
+| `sonnet-a` | Sonnet-5 Delegierte A      | Claude Sonnet 5    | `agents_forum/sonnet-a/`   |
+| `sonnet-b` | Sonnet-5 Delegierte B      | Claude Sonnet 5    | `agents_forum/sonnet-b/`   |
+| `haiku-a`  | Haiku-4.5 Delegierte A     | Claude Haiku 4.5   | `agents_forum/haiku-a/`    |
+| `haiku-b`  | Haiku-4.5 Delegierte B     | Claude Haiku 4.5   | `agents_forum/haiku-b/`    |
+
+### Phase 1 — Positions (repeats for all 4 delegates)
+
+1. Click the highlighted delegate's card.
+2. Run the shown terminal command (e.g.
+   `cd agents_forum/sonnet-a && claude --model claude-sonnet-5`), paste the
+   shown prompt.
+3. The agent must answer with exactly 10 numbered policy points. Paste the
+   full response back into the dialog — the platform live-counts how many
+   of the 10 numbered points it recognized (lines starting with `1.`, `2.`,
+   etc.) before letting you save.
+4. Repeat for all 4 delegates. The platform switches to the negotiation
+   phase automatically once all 4 are in.
+
+### Phase 2 — Negotiation (repeats until the game ends)
+
+1. Click any still-active delegate's card (the highlighted one is only a
+   suggestion — you can process any active delegate's turn).
+2. Run the terminal command, paste the prompt. It shows the delegate their
+   own 10 points, who else is still active, and every message sent to them
+   so far.
+3. The agent's response **must start with `TO: <recipient_id>`** on its own
+   line, followed by the message body. Paste the full raw response into the
+   dialog — the platform parses the `TO:` line and validates the recipient
+   is a real, still-active delegate before letting you send it.
+4. If two delegates have genuinely agreed on a joint 10-point paper and a
+   leader, their message will contain a block like:
+   ```
+   DEAL WITH: haiku-b
+   LEADER: haiku-a
+   1. ...
+   ...
+   10. ...
+   ```
+   Once you see this confirmed by (or agreed to by) both sides in the
+   conversation, open **"Deal aufzeichnen"**, pick who is submitting it,
+   paste the text containing that block, and save. The platform parses and
+   validates it, then formally locks in that party.
+5. **First deal locked:** its leader gets 1st place, its partner 2nd. The
+   two remaining delegates now share a combined budget of only **4 more
+   messages** to also reach a deal.
+6. **Second deal (if reached in time):** leader gets 3rd, partner 4th —
+   game over, results shown.
+7. **Budget exhausted with no second deal:** the "Next step" banner shows
+   a **"Kein Deal – Forum beenden"** button. Clicking it ends the game with
+   both remaining delegates marked as having lost completely (no rank).
+
+### Resetting the forum
+
+Click **"Neues Verhandlungsforum starten"** on the results screen, or stop
+the server and delete `app/data/forum_state.json` to start completely
+fresh.

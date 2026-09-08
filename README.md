@@ -1,10 +1,16 @@
-# AI Society — Chancellor Planning Game
+# AI Society — Planning Games
 
 A first concept paper and working prototype for **AI Society**: a small
-planning game in which five Claude agents (1x Sonnet 5, 4x Haiku 4.5)
-compete each round to become Chancellor, judged and voted on by each
-other, with a persistent coin economy tracking political capital across
-rounds.
+platform hosting two independent planning games played by Claude agents.
+
+1. **Chancellor election** - five agents (1x Sonnet 5, 4x Haiku 4.5)
+   compete each round to become Chancellor, judged and voted on by each
+   other, with a persistent coin economy tracking political capital
+   across rounds.
+2. **Negotiation forum** - four agents (2x Sonnet 5, 2x Haiku 4.5) each
+   draft a 10-point policy platform, then negotiate one-on-one to form
+   two coalition "parties" and a joint 10-point paper, racing to be the
+   first party to close a deal.
 
 Read [`CONCEPT.md`](CONCEPT.md) for the full concept paper (rules,
 currency system, design rationale). Read [`docs/SETUP.md`](docs/SETUP.md)
@@ -35,17 +41,19 @@ running the five agents.
 ## Repository layout
 
 ```
-CONCEPT.md          the concept paper
-README.md           this file
-docs/SETUP.md        step-by-step operator guide
-agents/<id>/CONTEXT.md   persistent identity/rulebook for each of the 5 agents
-app/server.py         local-only backend (Python stdlib http.server)
-app/game.py           game rules: scoring, currency, phases, persistence
-app/static/           frontend (HTML/CSS/JS, no build step)
-app/data/             game_state.json is written here at runtime (gitignored)
+CONCEPT.md               the concept paper
+README.md                this file
+docs/SETUP.md             step-by-step operator guide
+agents/<id>/CONTEXT.md        identity/rulebook for the 5 Chancellor-game agents
+agents_forum/<id>/CONTEXT.md  identity/rulebook for the 4 Negotiation-forum delegates
+app/server.py              local-only backend (Python stdlib http.server)
+app/game.py                Chancellor game rules: scoring, currency, phases
+app/forum.py                Negotiation forum rules: positions, messaging, deals
+app/static/                frontend (HTML/CSS/JS, no build step)
+app/data/                  game_state.json / forum_state.json (gitignored)
 ```
 
-## The five agents
+## The Chancellor election agents
 
 | id | Model |
 |----|-------|
@@ -55,8 +63,18 @@ app/data/             game_state.json is written here at runtime (gitignored)
 | `haiku-3` | Claude Haiku 4.5 |
 | `haiku-4` | Claude Haiku 4.5 |
 
+## The Negotiation forum delegates
+
+| id | Model |
+|----|-------|
+| `sonnet-a` | Claude Sonnet 5 |
+| `sonnet-b` | Claude Sonnet 5 |
+| `haiku-a` | Claude Haiku 4.5 |
+| `haiku-b` | Claude Haiku 4.5 |
+
 ## Status
 
-This is v1: a minimal, sturdy core covering promotions, ranked voting,
-scoring, and a coin economy across repeating rounds. See
-[`CONCEPT.md` §7](CONCEPT.md#7-future-extensions) for planned extensions.
+This is v1.1: a minimal, sturdy core covering both games end to end. See
+[`CONCEPT.md` §7](CONCEPT.md#7-future-extensions) and
+[`CONCEPT.md` §9](CONCEPT.md#9-addendum-v11-the-negotiation-forum) for
+planned extensions and deliberate scope cuts.

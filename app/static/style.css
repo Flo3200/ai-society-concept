@@ -143,6 +143,87 @@ main {
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
+.toplevel-panel { display: none; }
+.toplevel-panel.active { display: block; }
+
+.tabs.subtabs {
+  margin: 20px 32px 0;
+  width: fit-content;
+}
+
+.message-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.message-bubble {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.message-bubble .meta {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.message-bubble .meta .arrow { color: var(--accent); }
+
+.deal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--accent-dim);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+
+.deal-card h3 { margin: 0 0 8px; font-size: 15px; color: var(--accent); }
+
+.deal-card ol {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.budget-warning {
+  color: var(--bad);
+  font-weight: 600;
+}
+
+.points-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+
+.rank-badge {
+  display: inline-block;
+  min-width: 26px;
+  text-align: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+
+.rank-badge.rank-1 { color: var(--accent); border-color: var(--accent); }
+.rank-badge.rank-2 { color: var(--good); border-color: var(--good); }
+.rank-badge.rank-lost { color: var(--bad); border-color: var(--bad); }
+
 .phase-stepper {
   display: flex;
   gap: 8px;

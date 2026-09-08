@@ -50,12 +50,21 @@
 
   // ---------- tabs ----------
 
-  document.querySelectorAll(".tab-btn").forEach(function (btn) {
+  document.querySelectorAll(".tab-btn[data-tab]").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      document.querySelectorAll(".tab-btn").forEach(function (b) { b.classList.remove("active"); });
+      document.querySelectorAll(".tab-btn[data-tab]").forEach(function (b) { b.classList.remove("active"); });
       document.querySelectorAll(".tab-panel").forEach(function (p) { p.classList.remove("active"); });
       btn.classList.add("active");
       document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+    });
+  });
+
+  document.querySelectorAll(".tab-btn[data-toplevel-tab]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".tab-btn[data-toplevel-tab]").forEach(function (b) { b.classList.remove("active"); });
+      document.querySelectorAll(".toplevel-panel").forEach(function (p) { p.classList.remove("active"); });
+      btn.classList.add("active");
+      document.getElementById("toplevel-" + btn.dataset.toplevelTab).classList.add("active");
     });
   });
 
@@ -473,7 +482,7 @@
           })
           .join("");
         return (
-          '<div class="history-entry"><h3>Round ' +
+          '<div class="history-entry"><h3>Round " +
           record.round +
           " &mdash; winner: " +
           escapeHtml(winnerName) +

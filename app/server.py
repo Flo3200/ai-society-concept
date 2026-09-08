@@ -14,6 +14,7 @@ from urllib.parse import urlparse
 
 sys.path.insert(0, os.path.dirname(__file__))
 from game import GameState, AGENT_IDS  # noqa: E402
+from forum import ForumState, FORUM_AGENT_IDS  # noqa: E402
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 
@@ -27,6 +28,7 @@ CONTENT_TYPES = {
 }
 
 game = GameState()
+forum = ForumState()
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -85,6 +87,33 @@ class Handler(BaseHTTPRequestHandler):
             self._send_json(game.to_public_dict())
             return
 
+        if path == "/api/forum/state":
+            self._send_json(forum.to_public_dict())
+            return
+
+        if path.startswith("/api/forum/prompt/"):
+            agent_id = path.rsplit("/", 1)[-1]
+            if agent_id not in FORUM_AGENT_IDS:
+                self._send_error_json("unknown agent id", 404)
+                return
+            phase = forum.state["phase"]
+            if phase == "position":
+                prompt = forum.position_prompt(agent_id)
+            elif phase == "negotiation":
+                prompt = forum.message_prompt(agent_id)
+            else:
+                self._send_error_json("no prompt needed in current phase", 400)
+                return
+            self._send_json(
+                {
+                    "agent_id": agent_id,
+                    "phase": phase,
+                    "terminal_command": forum.terminal_command(agent_id),
+                    "prompt": prompt,
+                }
+            )
+            return
+
         if path.startswith("/api/prompt/"):
             agent_id = path.rsplit("/", 1)[-1]
             if agent_id not in AGENT_IDS:
@@ -138,6 +167,33 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/reset":
                 game.reset()
                 self._send_json(game.to_public_dict())
+                return
+
+            if path == "/api/forum/position":
+                forum.submit_position(body.get("agent_id"), body.get("points", []))
+                self._send_json(forum.to_public_dict())
+                return
+
+            if path == "/api/forum/message":
+                forum.send_message(
+                    body.get("from_id"), body.get("to_id"), body.get("text", "")
+                )
+                self._send_json(forum.to_public_dict())
+                return
+
+            if path == "/api/forum/record_deal":
+                forum.record_deal(body.get("agent_id"), body.get("raw_text", ""))
+                self._send_json(forum.to_public_dict())
+                return
+
+            if path == "/api/forum/finish_without_deal":
+                forum.finish_without_second_deal()
+                self._send_json(forum.to_public_dict())
+                return
+
+            if path == "/api/forum/reset":
+                forum.reset()
+                self._send_json(forum.to_public_dict())
                 return
         except (ValueError, KeyError) as exc:
             self._send_error_json(str(exc))
