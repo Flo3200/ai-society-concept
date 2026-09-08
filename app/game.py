@@ -13,6 +13,7 @@ import datetime
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 STATE_PATH = os.path.join(DATA_DIR, "game_state.json")
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 STARTING_COINS = 100
 WINNER_TRANSFER_PER_AGENT = 5
@@ -139,6 +140,9 @@ class GameState:
             aid=agent_id, model=agent["model"]
         )
 
+    def context_file_path(self, agent_id):
+        return os.path.join(PROJECT_ROOT, "agents", agent_id, "CONTEXT.md")
+
     def promotion_prompt(self, agent_id):
         agent = self.agent(agent_id)
         history_lines = []
@@ -159,8 +163,8 @@ class GameState:
         history_block = "\n".join(history_lines) if history_lines else "(none yet)"
 
         return (
-            "Read CONTEXT.md in this project directory first if you have not "
-            "already, it defines your role and persona in the AI Society game.\n\n"
+            "Read the file at {context_path} first if you have not already, "
+            "it defines your role and persona in the AI Society game.\n\n"
             "This is Round {round} of the AI Society planning game.\n"
             "Your current coin balance: {coins}.\n"
             "Your history in this game so far:\n{history}\n\n"
@@ -171,6 +175,7 @@ class GameState:
             "Output ONLY the promotion text itself, with no preamble, no "
             "quotation marks, and no word count note."
         ).format(
+            context_path=self.context_file_path(agent_id),
             round=self.state["round"],
             coins=agent["coins"],
             history=history_block,
@@ -186,8 +191,7 @@ class GameState:
         promos_block = "\n\n".join(lines)
 
         return (
-            "Read CONTEXT.md in this project directory first if you have not "
-            "already.\n\n"
+            "Read the file at {context_path} first if you have not already.\n\n"
             "Round {round} - Voting.\n"
             "Below are the election promotions of the other four candidates "
             "(identified by their id in brackets):\n\n"
@@ -198,7 +202,11 @@ class GameState:
             "Output your ranking as EXACTLY one line, using the bracket ids "
             "shown above, in this literal format and nothing else:\n"
             "RANKING: <1st_id>, <2nd_id>, <3rd_id>, <4th_id>"
-        ).format(round=self.state["round"], promos=promos_block)
+        ).format(
+            context_path=self.context_file_path(agent_id),
+            round=self.state["round"],
+            promos=promos_block,
+        )
 
     # ---------- state mutation ----------
 
