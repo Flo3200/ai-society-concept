@@ -482,7 +482,7 @@
           })
           .join("");
         return (
-          '<div class="history-entry"><h3>Round " +
+          '<div class="history-entry"><h3>Round ' +
           record.round +
           " &mdash; winner: " +
           escapeHtml(winnerName) +
