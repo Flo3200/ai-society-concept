@@ -132,6 +132,23 @@ class GameState:
             return {"type": "start_next_round"}
         return {"type": "unknown"}
 
+    def agent_status(self, agent_id):
+        """Tiny, token-cheap status check for a self-driving agent session."""
+        if agent_id not in AGENT_IDS:
+            raise ValueError("unknown agent id")
+        phase = self.state["phase"]
+        if phase == "promotion":
+            my_turn = agent_id not in self.state["promotions"]
+        elif phase == "voting":
+            my_turn = agent_id not in self.state["ballots"]
+        else:
+            my_turn = False
+        return {
+            "phase": phase,
+            "round": self.state["round"],
+            "my_turn": my_turn,
+        }
+
     # ---------- prompt / command generation ----------
 
     def terminal_command(self, agent_id):

@@ -181,6 +181,30 @@ class ForumState:
             return None
         return max(0, POST_LOCK_MESSAGE_BUDGET - self.state["post_lock_messages_used"])
 
+    def agent_status(self, agent_id):
+        """Tiny, token-cheap status check for a self-driving agent session."""
+        if agent_id not in FORUM_AGENT_IDS:
+            raise ValueError("unknown agent id")
+        phase = self.state["phase"]
+        active = self.active_agent_ids()
+        if phase == "position":
+            my_turn = agent_id not in self.state["positions"]
+        elif phase == "negotiation":
+            budget_blocked = len(self.state["deals"]) == 1 and self.budget_remaining() == 0
+            my_turn = (
+                agent_id in active
+                and agent_id not in self.state["sent_this_round"]
+                and not budget_blocked
+            )
+        else:
+            my_turn = False
+        return {
+            "phase": phase,
+            "my_turn": my_turn,
+            "active": agent_id in active,
+            "game_over": phase == "results",
+        }
+
     def next_action(self):
         phase = self.state["phase"]
         if phase == "position":

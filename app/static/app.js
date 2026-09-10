@@ -9,6 +9,7 @@
     phaseStepper: document.getElementById("phase-stepper"),
     agentGrid: document.getElementById("agent-grid"),
     resultsPanel: document.getElementById("results-panel"),
+    statsBar: document.getElementById("stats-bar"),
     leaderboardBody: document.querySelector("#leaderboard-table tbody"),
     historyList: document.getElementById("history-list"),
     modalBackdrop: document.getElementById("modal-backdrop"),
@@ -89,6 +90,7 @@
     els.roundNumber.textContent = state.round;
     renderNextAction();
     renderStepper();
+    renderStats();
     renderAgentGrid();
     renderResults();
     renderLeaderboard();
@@ -136,6 +138,19 @@
         return '<div class="' + cls + '">' + p.label + "</div>";
       })
       .join("");
+  }
+
+  function renderStats() {
+    var totalCoins = state.agents.reduce(function (sum, a) { return sum + a.coins; }, 0);
+    var chips = ['<span class="stat-chip"><b>' + state.agents.length + "</b> candidates</span>"];
+    if (state.phase === "promotion") {
+      chips.push('<span class="stat-chip"><b>' + Object.keys(state.promotions).length + "/" + state.agents.length + "</b> promotions submitted</span>");
+    } else if (state.phase === "voting") {
+      chips.push('<span class="stat-chip"><b>' + Object.keys(state.ballots).length + "/" + state.agents.length + "</b> ballots submitted</span>");
+    }
+    chips.push('<span class="stat-chip"><b>' + totalCoins + "</b> coins in circulation</span>");
+    chips.push('<span class="stat-chip"><b>' + state.history.length + "</b> rounds completed</span>");
+    els.statsBar.innerHTML = chips.join("");
   }
 
   function renderAgentGrid() {

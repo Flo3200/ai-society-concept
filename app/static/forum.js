@@ -9,6 +9,7 @@
     agentGrid: document.getElementById("forum-agent-grid"),
     dealsPanel: document.getElementById("forum-deals-panel"),
     messagesPanel: document.getElementById("forum-messages-panel"),
+    statsBar: document.getElementById("forum-stats-bar"),
     resultPanel: document.getElementById("forum-result-panel"),
     modalBackdrop: document.getElementById("modal-backdrop-forum"),
     modalBody: document.getElementById("modal-body-forum"),
@@ -96,6 +97,7 @@
   function render() {
     renderNextAction();
     renderStepper();
+    renderStats();
     renderAgentGrid();
     renderDeals();
     renderMessages();
@@ -154,6 +156,22 @@
         return '<div class="' + cls + '">' + p.label + "</div>";
       })
       .join("");
+  }
+
+  function renderStats() {
+    var chips = [];
+    if (forumState.phase === "position") {
+      var submitted = Object.keys(forumState.positions).length;
+      chips.push('<span class="stat-chip"><b>' + submitted + "/" + forumState.agents.length + "</b> positions submitted</span>");
+    } else {
+      chips.push('<span class="stat-chip"><b>' + forumState.active_agent_ids.length + "/" + forumState.agents.length + "</b> delegates still active</span>");
+    }
+    chips.push('<span class="stat-chip"><b>' + forumState.messages.length + "</b> messages sent</span>");
+    chips.push('<span class="stat-chip"><b>' + forumState.deals.length + "/2</b> parties formed</span>");
+    if (forumState.budget_remaining !== null && forumState.budget_remaining !== undefined) {
+      chips.push('<span class="stat-chip budget-warning"><b>' + forumState.budget_remaining + "</b> messages left for 2nd party</span>");
+    }
+    els.statsBar.innerHTML = chips.join("");
   }
 
   function renderAgentGrid() {

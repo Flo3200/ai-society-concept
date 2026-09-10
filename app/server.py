@@ -91,6 +91,22 @@ class Handler(BaseHTTPRequestHandler):
             self._send_json(forum.to_public_dict())
             return
 
+        if path.startswith("/api/agent/chancellor/status/"):
+            agent_id = path.rsplit("/", 1)[-1]
+            if agent_id not in AGENT_IDS:
+                self._send_error_json("unknown agent id", 404)
+                return
+            self._send_json(game.agent_status(agent_id))
+            return
+
+        if path.startswith("/api/agent/forum/status/"):
+            agent_id = path.rsplit("/", 1)[-1]
+            if agent_id not in FORUM_AGENT_IDS:
+                self._send_error_json("unknown agent id", 404)
+                return
+            self._send_json(forum.agent_status(agent_id))
+            return
+
         if path.startswith("/api/forum/prompt/"):
             agent_id = path.rsplit("/", 1)[-1]
             if agent_id not in FORUM_AGENT_IDS:
